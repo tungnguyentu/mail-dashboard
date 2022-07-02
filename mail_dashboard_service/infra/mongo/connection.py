@@ -5,4 +5,7 @@ settings = Settings()
 
 client = pymongo.MongoClient(settings.mongo.uri)
 
-db = client[settings.mongo.db]
+
+def get_db():
+    return client[settings.mongo.db]
+
