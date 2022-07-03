@@ -1,8 +1,18 @@
+from mail_dashboard_service.adapters.upgrade_account import account
 from mail_dashboard_service.core.ports.outbound import FreeEmailPort
 from mail_dashboard_service.core.models.free_email import (
+    ActivateEmailCommand,
+    ActivateEmailPayload,
+    ActivateEmailResponse,
     CreateEmailPayload,
     CreateEmailCommand,
     CreateEmailResponse,
+    DeactivateEmaiResponse,
+    DeactivateEmailCommand,
+    DeactivateEmailPayload,
+    GetEmailCommand,
+    GetEmailPayload,
+    GetEmailResponse,
     GetTimeRemainCommand,
     GetTimeRemainPayload,
     GetTimeRemainResponse,
@@ -24,45 +34,32 @@ class FreeEmailService:
         self.repo = repo
 
     def create_free_email(self, command: CreateEmailCommand) -> CreateEmailResponse:
-        account_id = self.repo.get_account_id(command)
-        if not account_id:
-            return CreateEmailResponse(
-                message="Account not found"
-            )
         payload = CreateEmailPayload(
-            account_id=account_id
+            account_id=command.account_id
         )
         response = self.repo.create(payload)
         return CreateEmailResponse(
+            status=response.status,
             message=response.message,
             email=response.email,
             expire=response.expire
         )
 
     def get_time_remaining(self, command: GetTimeRemainCommand) -> GetTimeRemainResponse:
-        account_id = self.repo.get_account_id(command)
-        if not account_id:
-            return GetTimeRemainResponse(
-                account_id="Account not found"
-            )
         payload = GetTimeRemainPayload(
-            account_id=account_id,
+            account_id=command.account_id,
             email=command.email
         )
         response = self.repo.get_remaining(payload)
         return GetTimeRemainResponse(
             message=response.message,
-            remaining=response.remaining
+            remaining=response.remaining,
+            status=response.status
         )
 
     def get_more_time(self, command: GetMoreTimeCommand) -> GetMoreTimeResponse:
-        account_id = self.repo.get_account_id(command)
-        if not account_id:
-            return GetMoreTimeResponse(
-                message="Account not found"
-            )
         payload = GetMoreTimePayload(
-            account_id=account_id,
+            account_id=command.account_id,
             email=command.email
         )
         response = self.repo.refill(payload)
@@ -73,13 +70,8 @@ class FreeEmailService:
         )
 
     def delete_email(self, command: DeleteEmailCommand) -> DeleteEmailResponse:
-        account_id = self.repo.get_account_id(command)
-        if not account_id:
-            return DeleteEmailResponse(
-                message="Account not found"
-            )
         payload = DeleteEmailPayload(
-            account_id=account_id,
+            account_id=command.account_id,
             email=command.email
         )
         response = self.repo.delete(payload)
@@ -90,17 +82,53 @@ class FreeEmailService:
         )
 
     def get_emails(self, command: GetEmailsCommand) -> GetEmailsResponse:
-        account_id = self.repo.get_account_id(command)
-        if not account_id:
-            return GetEmailsResponse(
-                message="Account not found"
-            )
         payload = GetEmailsPayload(
-            account_id=account_id
+            account_id=command.account_id
         )
         response = self.repo.get_emails(payload)
         return GetEmailsResponse(
             message=response.message,
             account_id=response.account_id,
             emails=response.emails
+        )
+
+    def get_email(self, command: GetEmailCommand) -> GetEmailResponse:
+        payload = GetEmailPayload(
+            account_id=command.account_id,
+            email=command.email
+        )
+        response = self.repo.get_email(payload)
+        return GetEmailResponse(
+            status=response.status,
+            message=response.message,
+            email=response.email,
+            expire=response.expire,
+            active=response.active
+        )
+
+    def activate(self, command: ActivateEmailCommand) -> ActivateEmailResponse:
+        payload = ActivateEmailPayload(
+            account_id=command.account_id,
+            email=command.email
+        )
+        result = self.repo.activate(payload)
+        return ActivateEmailResponse(
+            status=result.status,
+            message=result.message,
+            email=result.email,
+            active=result.active
+        )
+
+    def deactivate(self, command: DeactivateEmailCommand) -> DeactivateEmaiResponse:
+        payload = DeactivateEmailPayload(
+            account_id=command.account_id,
+            email=command.email
+        )
+        result = self.repo.activate(payload)
+        return DeactivateEmaiResponse(
+            status=result.status,
+            message=result.message,
+            email=result.email,
+            active=result.active,
+            account_id=result.account_id
         )

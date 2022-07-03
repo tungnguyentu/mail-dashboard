@@ -1,40 +1,43 @@
 from pydantic import BaseModel, EmailStr
 
 
-#Create
+class ServiceResponse(BaseModel):
+    status: int
+    message: str
+
+
+# Create
 class CreateEmailPayload(BaseModel):
     account_id: str
 
 
 class CreateEmailCommand(BaseModel):
-    token: str
+    account_id: str
 
 
-class CreateEmailResponse(BaseModel):
-    message: str
+class CreateEmailResponse(ServiceResponse):
     email: EmailStr = None
     expire: int = None
 
 
-#Get Time Remain
+# Get Time Remain
 class GetTimeRemainPayload(BaseModel):
     account_id: str
     email: EmailStr
 
 
 class GetTimeRemainCommand(BaseModel):
-    token: str
+    account_id: str
     email: EmailStr
 
 
-class GetTimeRemainResponse(BaseModel):
-    message: str
+class GetTimeRemainResponse(ServiceResponse):
     remaining: int = None
 
 
 # Refill
 class GetMoreTimeCommand(BaseModel):
-    token: str
+    account_id: str
     email: EmailStr
 
 
@@ -43,16 +46,16 @@ class GetMoreTimePayload(BaseModel):
     email: EmailStr
 
 
-class GetMoreTimeResponse(BaseModel):
+class GetMoreTimeResponse(ServiceResponse):
     message: str
     email: EmailStr = None
     expire: int = None
 
 
-#delete email
+# delete email
 
 class DeleteEmailCommand(BaseModel):
-    token: str
+    account_id: str
     email: EmailStr
 
 
@@ -61,21 +64,69 @@ class DeleteEmailPayload(BaseModel):
     email: EmailStr
 
 
-class DeleteEmailResponse(BaseModel):
-    message: str
+class DeleteEmailResponse(ServiceResponse):
     account_id: str = None
     email: EmailStr = None
 
 # list email
+
+
 class GetEmailsCommand(BaseModel):
-    token: str
+    account_id: str
 
 
 class GetEmailsPayload(BaseModel):
     account_id: str
 
 
-class GetEmailsResponse(BaseModel):
+class GetEmailsResponse(ServiceResponse):
     message: str
     account_id: str = None
     emails: dict = None
+
+
+class GetEmailCommand(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class GetEmailPayload(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class GetEmailResponse(ServiceResponse):
+    email: EmailStr
+    expire: int
+    active: int
+
+
+class ActivateEmailCommand(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class ActivateEmailPayload(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class ActivateEmailResponse(ServiceResponse):
+    email: EmailStr
+    active: int
+
+
+class DeactivateEmailCommand(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class DeactivateEmailPayload(BaseModel):
+    account_id: str
+    email: EmailStr
+
+
+class DeactivateEmaiResponse(ServiceResponse):
+    email: EmailStr
+    active: int
+    account_id: str

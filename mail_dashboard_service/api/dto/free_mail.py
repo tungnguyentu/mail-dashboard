@@ -22,3 +22,18 @@ class DeleteEmailDTO(BaseModel):
 
 class GetEmails(BaseModel):
     token: str
+
+
+class GetEmail(BaseModel):
+    token: str
+    email: EmailStr
+
+
+class ActivateEmailDTO(BaseModel):
+    token: str
+    email: EmailStr
+
+
+class DeactivateEmailDTO(BaseModel):
+    token: str
+    email: EmailStr

@@ -28,3 +28,15 @@ def delete_email_service(repo=Depends(free_mail_repository)):
 
 def get_emails_service(repo=Depends(free_mail_repository)):
     return FreeEmailService(repo)
+
+
+def get_email_service(repo=Depends(free_mail_repository)):
+    return FreeEmailService(repo)
+
+
+def activate_email_service(repo=Depends(free_mail_repository)):
+    return FreeEmailService(repo)
+
+
+def deactivate_email_service(repo=Depends(free_mail_repository)):
+    return FreeEmailService(repo)

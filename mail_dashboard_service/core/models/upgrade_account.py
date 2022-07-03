@@ -2,8 +2,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 
+class ServiceResponse(BaseModel):
+    status: int
+    message: str
+
+
 class UpgradeAccountCommand(BaseModel):
-    token: str
+    account_id: str
     plan_id: str
     plan_name: str
     months: int
@@ -14,7 +19,7 @@ class UpgradeAccountPayload(BaseModel):
     plan_name: str
 
 
-class UpgradeAccountResponse(BaseModel):
+class UpgradeAccountResponse(ServiceResponse):
     account_id: Optional[str] = None
     plan_name: Optional[str] = None
     amount: Optional[float] = None
@@ -27,7 +32,7 @@ class PayOrderPayload(BaseModel):
     months: int
 
 
-class PayOrderResponse(BaseModel):
+class PayOrderResponse(ServiceResponse):
     order_id: Optional[str] = None
     account_id: Optional[str] = None
     plan_id: Optional[str] = None
@@ -46,27 +51,18 @@ class CreateQuotaPayload(BaseModel):
     alias_limit: int
 
 
-class CreateQuotaResponse(BaseModel):
+class CreateQuotaResponse(ServiceResponse):
     account_id: Optional[str] = None
     email_limit: Optional[int] = None
     custom_email_limit: Optional[int] = None
     alias_limit: Optional[int] = None
 
 
-class DisableSubscriptionPayload(BaseModel):
-    order_id: str
-
-
-class DisableSubscriptionResponse(BaseModel):
-    sub_id: str
-    bill_id: str
-
-
 class RefundOrderPayload(BaseModel):
     order_id: str
 
 
-class RefundOrderResponse(BaseModel):
+class RefundOrderResponse(ServiceResponse):
     sub_id: Optional[str]
     bill_id: Optional[str]
 
@@ -81,11 +77,11 @@ class OrderUpdateStatusPayload(BaseModel):
     status: str
 
 
-class OrderUpdateStatusResponse(BaseModel):
+class OrderUpdateStatusResponse(ServiceResponse):
     updated: bool
 
 
-class OrderResponse(BaseModel):
+class OrderResponse(ServiceResponse):
     order_id: str
 
 
@@ -99,5 +95,5 @@ class OrderUpdatePayload(BaseModel):
     end_time: str
 
 
-class OrderUpdateResponse(BaseModel):
+class OrderUpdateResponse(ServiceResponse):
     updated: bool
