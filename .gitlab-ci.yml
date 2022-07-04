@@ -1,0 +1,31 @@
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+  LATEST_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-latest
+  CD_API_DEPLOYMENT_NAME: mail-dashboard
+  CD_API_CONTAINER_NAME: mail-dashboard-container
+
+stages:
+  - build
+  - deploy-api
+
+build-job:
+  only:
+    - master
+  tags:
+    - "x-project"
+  stage: build
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker tag $IMAGE_TAG $LATEST_TAG
+    - docker push $IMAGE_TAG
+    - docker push $LATEST_TAG
+
+deploy-api-job:
+  only:
+    - master
+  tags:
+    - "x-project"
+  stage: deploy-api
+  script:
+    - kubectl set image deployment/$CD_API_DEPLOYMENT_NAME $CD_API_CONTAINER_NAME=$LATEST_TAG
