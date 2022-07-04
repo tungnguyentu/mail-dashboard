@@ -28,4 +28,4 @@ deploy-api-job:
     - "x-project"
   stage: deploy-api
   script:
-    - kubectl set image deployment/$CD_API_DEPLOYMENT_NAME $CD_API_CONTAINER_NAME=$LATEST_TAG
+    - kubectl set image deployment/$CD_API_DEPLOYMENT_NAME $CD_API_CONTAINER_NAME=$IMAGE_TAG
