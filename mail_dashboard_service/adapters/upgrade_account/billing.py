@@ -13,14 +13,17 @@ class UpgradeAccountBillingAdapter:
         self.settings = settings
 
     def refund_order(self, payload: RefundOrderPayload) -> RefundOrderResponse:
-        response = requests.post(
+        response = requests.patch(
             self.settings.api.billing.refund_order,
             data={
                 "order_id": payload.order_id
             }
         )
         if not response.ok:
-            return RefundOrderResponse()
+            return RefundOrderResponse(
+                message=response.reason,
+                status=0
+            )
         data = response.json()
         return RefundOrderResponse(
             sub_id=data.get("sub_id"),
@@ -37,8 +40,11 @@ class UpgradeAccountBillingAdapter:
                 "months": payload.months
             }
         )
-        if not response.ok or response.status_code != 200:
-            return PayOrderResponse()
+        if not response.ok:
+            return PayOrderResponse(
+                status=0,
+                message=response.reason
+            )
         data = response.json()
         return PayOrderResponse(
             ok=response.ok,
