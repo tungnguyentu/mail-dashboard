@@ -19,8 +19,11 @@ def upgrade_account(
     payload: UpgradeAccountDTO,
     service: UpgradeAccountUseCase = Depends(upgrade_account_service)
 ):
+    account = get_account_id(payload.token)
+    if not account.get("account_id"):
+        return UpgradeAccountResponse(message="Invalid token", status=404)
     command = UpgradeAccountCommand(
-        account_id=get_account_id(payload.token),
+        account_id=account.get("account_id"),
         plan_name=payload.plan_name,
         plan_id=payload.plan_id,
         months=payload.months,
