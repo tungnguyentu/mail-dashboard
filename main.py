@@ -19,3 +19,10 @@ app.include_router(upgrade_account_router, prefix="/api/v1")
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 
+uvicorn.run(
+    app, 
+    host=Settings.API_HOST,
+    port=Settings.API_PORT,
+    debug=Settings.API_DEBUG_MODE,
+    reload=Settings.API_AUTO_RELOAD
+)
