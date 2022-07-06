@@ -8,11 +8,15 @@ from mail_dashboard_service.api.routers.free_mail import (
 from mail_dashboard_service.api.routers.upgrade_account import (
     router as upgrade_account_router,
 )
+from mail_dashboard_service.api.routers.subscription import (
+    router as subscription_router,
+)
 
 app = FastAPI()
 
 app.include_router(free_mail_router, prefix="/api/v1")
 app.include_router(upgrade_account_router, prefix="/api/v1")
+app.include_router(subscription_router, prefix="/api/v1")
 
 
 @app.get("/")
