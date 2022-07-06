@@ -4,7 +4,7 @@ from typing import Union, List
 from . import get_account_id
 
 from mail_dashboard_service.api.dto.subscription import GetSubscriptionsDTO
-from mail_dashboard_service.core.ports.inbound.upgrade_account import SubscriptionUseCase
+from mail_dashboard_service.core.ports.inbound.subscription import SubscriptionUseCase
 from mail_dashboard_service.api.dependencies.subscription import get_subscriptions_service
 from mail_dashboard_service.core.models.get_subscriptions import (
     GetSubsciptionsQuery,

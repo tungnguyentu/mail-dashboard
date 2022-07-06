@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from mail_dashboard_service.core.models.subscriptions import (
+from mail_dashboard_service.core.models.get_subscriptions import (
     GetSubsciptionsQuery,
     GetSubsciptionsResponse
 )

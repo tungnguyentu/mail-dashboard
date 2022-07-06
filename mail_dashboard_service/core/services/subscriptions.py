@@ -2,7 +2,7 @@ from mail_dashboard_service.core.models.get_subscriptions import (
     GetSubsciptionsQuery,
     GetSubsciptionsResponse
 )
-from mail_dashboard_service.core.ports.outbound.get_subscriptions import GetSubsciptionsPort
+from mail_dashboard_service.core.ports.outbound.subscription import GetSubsciptionsPort
 
 
 class SubsciptionsService:
