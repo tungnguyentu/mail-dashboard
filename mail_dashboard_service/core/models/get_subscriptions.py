@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 
@@ -15,35 +15,35 @@ class ServiceResponse(BaseModel):
     status: str
 
 
-class GetSubsciptionBase(ServiceResponse):
-    created: str
-    deleted: bool
-    updated: str
+class GetSubsciptionBase(BaseModel):
+    created: Optional[str] = None
+    deleted: bool = False
+    updated: Optional[str] = None
 
 
 class BillResponse(GetSubsciptionBase):
-    _id: str
-    discount: int
-    bill_status: str
-    sub_total: int
-    subscription_id: str
-    total: int
+    _id: Optional[str] = None
+    discount: Optional[int] = None
+    bill_status: Optional[str] = None
+    sub_total: Optional[int] = None
+    subscription_id: Optional[str] = None
+    total: Optional[int] = None
 
 
 class GetSubsciptionResponse(GetSubsciptionBase):
-    _id: str
-    account_id: str
+    _id: Optional[str] = None
+    account_id: Optional[str] = None
     bill: List[BillResponse]
-    end_time: str
-    month: int
-    order_id: str
-    plan_id: str
-    price_id: str
-    promotion_id: str
-    start_time: str
-    sub_status: str
+    end_time: Optional[str] = None
+    month: Optional[int] = None
+    order_id: Optional[str] = None
+    plan_id: Optional[str] = None
+    price_id: Optional[str] = None
+    promotion_id: Optional[str] = None
+    start_time: Optional[str] = None
+    sub_status: Optional[str] = None
 
 
 class GetSubsciptionsResponse(ServiceResponse):
-    subscriptions: list
-    total: int
+    subscriptions: List[GetSubsciptionResponse]
+    total: Optional[int] = None
