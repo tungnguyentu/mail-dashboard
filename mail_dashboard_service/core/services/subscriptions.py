@@ -1,4 +1,5 @@
 from mail_dashboard_service.core.models.get_subscriptions import (
+    GetSubsPayload,
     GetSubsciptionsQuery,
     GetSubsciptionsResponse
 )
@@ -8,7 +9,7 @@ from mail_dashboard_service.core.ports.outbound.subscription import GetSubscipti
 class SubsciptionsService:
     
     def __init__(self, sub: GetSubsciptionsPort):
-        self.sub = query
+        self.sub = sub
     
     def get_subs(self, query: GetSubsciptionsQuery) -> GetSubsciptionsResponse:
         payload = GetSubsPayload(
