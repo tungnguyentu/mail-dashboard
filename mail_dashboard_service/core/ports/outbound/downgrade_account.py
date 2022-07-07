@@ -12,3 +12,7 @@ class DowngradeAccountPort(Protocol):
 
 class DowngradeMailCorePort(Protocol):
     ...
+
+
+class DowngradeNotifyPort(Protocol):
+    ...

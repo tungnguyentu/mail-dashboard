@@ -1,7 +1,13 @@
-
 from mail_dashboard_service.core.ports.outbound.downgrade_account import (
     DowngradeAccountPort,
-    DowngradeMailCorePort
+    DowngradeMailCorePort,
+    DowngradeNotifyPort
+)
+from mail_dashboard_service.core.models.downgrade_account import (
+    DowngradeAccountCommand,
+    DowngradeAccountPayload,
+    DowngradeAccountResponse,
+    UpdateAccountQuotaPayload
 )
 
 
@@ -15,11 +21,10 @@ class DowngradeAccountService:
         self.mail_core = mail_core
         self.account = account
         self.notify = notify
-    
+
     def downgrade(self, command: DowngradeAccountCommand) -> DowngradeAccountResponse:
-        self.mail_core.clear_emails()
+        response = self.mail_core.clear_emails(command.account_id)
         plan = self.mail_core.get_default_plan()
-        self.mail_core.get_quota_mapping(plan.name)
         quota_payload = UpdateAccountQuotaPayload(
             account_id=command.account_id,
             email_limit=plan.get("email_limit"),
@@ -32,10 +37,11 @@ class DowngradeAccountService:
             plan_name=plan.name
         )
         response = self.account.downgrade_account(downgrade_account_payload)
-
+        self.notify.send_downgrade_account_notification(response)
         return DowngradeAccountResponse(
-            message="Downgrade Account Success",
-            status=1,
+            message=response.message,
+            status=response.status,
             account_id=command.account_id,
-            plan_name=response.plan_name
+            plan_name=response.plan_name,
+            amount=response.amount
         )
