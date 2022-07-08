@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
+from typing import Union, List
 
 from . import get_account_id
 
@@ -11,15 +12,16 @@ router = APIRouter()
 
 
 @router.post(
-    "/upgrade",
+    "/account/upgrade",
     response_model=UpgradeAccountResponse,
     response_model_exclude_unset=True
 )
 def upgrade_account(
     payload: UpgradeAccountDTO,
-    service: UpgradeAccountUseCase = Depends(upgrade_account_service)
+    service: UpgradeAccountUseCase = Depends(upgrade_account_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return UpgradeAccountResponse(message="Invalid token", status=404)
     command = UpgradeAccountCommand(

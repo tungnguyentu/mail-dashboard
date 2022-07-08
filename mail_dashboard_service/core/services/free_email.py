@@ -1,4 +1,3 @@
-from mail_dashboard_service.adapters.upgrade_account import account
 from mail_dashboard_service.core.ports.outbound import FreeEmailPort
 from mail_dashboard_service.core.models.free_email import (
     ActivateEmailCommand,

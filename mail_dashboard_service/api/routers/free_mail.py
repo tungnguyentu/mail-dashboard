@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Header
+from typing import Union
+
+from pydantic import EmailStr
 
 from mail_dashboard_service.core.models.free_email import ActivateEmailCommand, ActivateEmailResponse, CreateEmailCommand, CreateEmailResponse, DeactivateEmaiResponse, DeactivateEmailCommand, DeleteEmailCommand, DeleteEmailResponse, GetEmailCommand, GetEmailResponse, GetEmailsCommand, GetEmailsResponse, GetMoreTimeCommand, GetMoreTimeResponse, GetTimeRemainCommand, GetTimeRemainResponse
 
@@ -29,15 +32,15 @@ from mail_dashboard_service.api.dependencies.free_mail import (
 router = APIRouter()
 
 
-@router.post("/create",
+@router.post("/emails",
     response_model=CreateEmailResponse,
     response_model_exclude_unset=True
 )
 def create_free_email(
-    payload: CreateFreeEmailDTO,
-    service: FreeMailUseCase = Depends(create_free_email_service)
+    service: FreeMailUseCase = Depends(create_free_email_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return CreateEmailResponse(message="Invalid token", status=404)
     command = CreateEmailCommand(
@@ -51,20 +54,21 @@ def create_free_email(
     return result
 
 
-@router.get("/remaining",
+@router.get("/emails/{email}/remaining",
     response_model=GetTimeRemainResponse,
     response_model_exclude_unset=True
 )
 def get_time_expired(
-    payload: GetTimeExpiredDTO = Depends(GetTimeExpiredDTO),
-    service: FreeMailUseCase = Depends(get_time_remaining_service)
+    email: EmailStr,
+    service: FreeMailUseCase = Depends(get_time_remaining_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return GetTimeRemainResponse(message="Invalid token", status=404)
     command = GetTimeRemainCommand(
         account_id=account.get("account_id"),
-        email=payload.email
+        email=email
     )
     result = service.get_time_remaining(command)
     if not result.status:
@@ -74,15 +78,16 @@ def get_time_expired(
     return result
 
 
-@router.post("/more",
+@router.post("/emails/refill",
     response_model=GetMoreTimeResponse,
     response_model_exclude_unset=True
 )
 def refill(
     payload: GetMoreTimeDTO,
-    service: FreeMailUseCase = Depends(get_more_time_service)
+    service: FreeMailUseCase = Depends(get_more_time_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return GetMoreTimeResponse(message="Invalid token", status=404)
     command = GetMoreTimeCommand(
@@ -97,15 +102,16 @@ def refill(
     return result
 
 
-@router.delete("/delete",
+@router.delete("/emails",
     response_model=DeleteEmailResponse,
     response_model_exclude_unset=True
 )
 def delete_email(
     payload: DeleteEmailDTO,
-    service: FreeMailUseCase = Depends(delete_email_service)
+    service: FreeMailUseCase = Depends(delete_email_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return DeleteEmailResponse(message="Invalid token", status=404)
     command = DeleteEmailCommand(
@@ -125,10 +131,10 @@ def delete_email(
     response_model_exclude_unset=True
 )
 def get_emails(
-    payload: GetEmails = Depends(GetEmails),
-    service: FreeMailUseCase = Depends(get_emails_service)
+    service: FreeMailUseCase = Depends(get_emails_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return GetEmailsResponse(message="Invalid token", status=404)
     command = GetEmailsCommand(
@@ -142,20 +148,21 @@ def get_emails(
     return result
 
 
-@router.get("/email",
+@router.get("/emails/{email}",
     response_model=GetEmailResponse,
     response_model_exclude_unset=True
 )
 def get_email(
-    payload: GetEmail = Depends(GetEmail),
-    service: FreeMailUseCase = Depends(get_email_service)
+    email: EmailStr,
+    service: FreeMailUseCase = Depends(get_email_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return GetEmailResponse(message="Invalid token", status=404)
     command = GetEmailCommand(
-        account_id=get_account_id(payload.token),
-        email=payload.email
+        account_id=account.get("account_id"),
+        email=email
     )
     result = service.get_email(command)
     if not result.status:
@@ -165,15 +172,16 @@ def get_email(
     return result
 
 
-@router.post("/activate",
+@router.post("/emails/activate",
     response_model=ActivateEmailResponse,
     response_model_exclude_unset=True
 )
 def activate_email(
     payload: ActivateEmailDTO,
-    service: FreeMailUseCase = Depends(activate_email_service)
+    service: FreeMailUseCase = Depends(activate_email_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return ActivateEmailResponse(message="Invalid token", status=404)
     command = ActivateEmailCommand(
@@ -188,19 +196,20 @@ def activate_email(
     return result
 
 
-@router.post("/deactivate",
+@router.post("/emails/deactivate",
     response_model=DeactivateEmaiResponse,
     response_model_exclude_unset=True
 )
 def deactivate_email(
     payload: DeactivateEmailDTO,
-    service: FreeMailUseCase = Depends(deactivate_email_service)
+    service: FreeMailUseCase = Depends(deactivate_email_service),
+    x_token: Union[str, None] = Header(default=None)
 ):
-    account = get_account_id(payload.token)
+    account = get_account_id(x_token)
     if not account.get("account_id"):
         return DeactivateEmaiResponse(message="Invalid token", status=404)
     command = DeactivateEmailCommand(
-        account_id=get_account_id(payload.token),
+        account_id=account.get("account_id"),
         email=payload.email
     )
     result = service.deactivate_email(command)

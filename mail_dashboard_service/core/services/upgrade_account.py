@@ -50,7 +50,7 @@ class UpgradeAccountService:
         )
         order_update_status_payload.status = "PAID"
         self.mail_core.update_order_status(order_update_status_payload)
-        quota = self.mail.get_quota_mapping(command.plan_name)
+        quota = self.mail_core.get_quota_mapping(command.plan_name)
 
         quota_payload = CreateQuotaPayload(
             account_id=command.account_id,

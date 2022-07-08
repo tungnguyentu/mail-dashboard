@@ -8,14 +8,29 @@ from mail_dashboard_service.api.routers.free_mail import (
 from mail_dashboard_service.api.routers.upgrade_account import (
     router as upgrade_account_router,
 )
+from mail_dashboard_service.api.routers.downgrade_account import (
+    router as downgrade_account_router,
+)
+from mail_dashboard_service.api.routers.subscription import (
+    router as subscription_router,
+)
 
-app = FastAPI()
+app = FastAPI(title="Mail Dashboard Service")
 
 app.include_router(free_mail_router, prefix="/api/v1")
 app.include_router(upgrade_account_router, prefix="/api/v1")
+app.include_router(subscription_router, prefix="/api/v1")
+app.include_router(downgrade_account_router, prefix="/api/v1")
 
 
 @app.get("/")
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 
+uvicorn.run(
+    app, 
+    host=Settings.API_HOST,
+    port=Settings.API_PORT,
+    debug=Settings.API_DEBUG_MODE,
+    reload=Settings.API_AUTO_RELOAD
+)

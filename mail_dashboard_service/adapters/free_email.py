@@ -1,6 +1,23 @@
 import requests
 from config.environment import Settings
-from mail_dashboard_service.core.models.free_email import ActivateEmailPayload, ActivateEmailResponse, CreateEmailPayload, CreateEmailResponse, DeactivateEmaiResponse, DeactivateEmailPayload, DeleteEmailPayload, DeleteEmailResponse, GetEmailPayload, GetEmailResponse, GetEmailsPayload, GetEmailsResponse, GetMoreTimePayload, GetMoreTimeResponse, GetTimeRemainPayload, GetTimeRemainResponse
+from mail_dashboard_service.core.models.free_email import (
+    ActivateEmailPayload,
+    ActivateEmailResponse,
+    CreateEmailPayload,
+    CreateEmailResponse,
+    DeactivateEmaiResponse,
+    DeactivateEmailPayload,
+    DeleteEmailPayload,
+    DeleteEmailResponse,
+    GetEmailPayload,
+    GetEmailResponse,
+    GetEmailsPayload,
+    GetEmailsResponse,
+    GetMoreTimePayload,
+    GetMoreTimeResponse,
+    GetTimeRemainPayload,
+    GetTimeRemainResponse
+)
 
 
 class FreeEmailApdater:
