@@ -22,7 +22,12 @@ class DowngradeAccountNotification:
                 message=response.reason
             )
         data = response.json()
+        notify = data.get("notify")
         return DowngradeAccountNotificationResponse(
             status=response.status_code,
-            message=data.get("message")
+            message=data.get("info"),
+            send_to=notify.get("send_to"),
+            title=notify.get("title"),
+            _type=notify.get("type"),
+            _id=notify.get("_id")
         )

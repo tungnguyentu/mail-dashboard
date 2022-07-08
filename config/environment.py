@@ -30,6 +30,10 @@ class BillingApiSettings:
     get_subs = env.str("GET_SUBS", "")
 
 
+class NotificationApiSettings:
+    downgrade_account_template_name = env.str("DOWNGRADE_ACCOUNT_TEMPLATE_NAME", "")
+
+
 class APISetting:
     account = AccountApiSettings
     mail_core = MailCoreApiSettings

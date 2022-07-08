@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class ServiceResponse(BaseModel):
@@ -40,4 +40,8 @@ class UpdateAccountQuotaResponse(ServiceResponse):
 
 
 class DowngradeAccountNotificationResponse(ServiceResponse):
-    ...
+    _id: str
+    send_to: str
+    title: str
+    _type: str
+    
