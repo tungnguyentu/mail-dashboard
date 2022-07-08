@@ -44,7 +44,18 @@ class PayOrderResponse(ServiceResponse):
     end_time: Optional[str] = None
 
 
+class GetQuotaPayload(BaseModel):
+    account_id: str
+
+
 class CreateQuotaPayload(BaseModel):
+    account_id: str
+    email_limit: int
+    custom_email_limit: int
+    alias_limit: int
+
+
+class UpdateQuotaPayload(BaseModel):
     account_id: str
     email_limit: int
     custom_email_limit: int
@@ -97,3 +108,17 @@ class OrderUpdatePayload(BaseModel):
 
 class OrderUpdateResponse(ServiceResponse):
     updated: bool
+
+
+class UpdateQuotaResponse(ServiceResponse):
+    account_id: Optional[str] = None
+    email_limit: Optional[int] = None
+    custom_email_limit: Optional[int] = None
+    alias_limit: Optional[int] = None
+
+
+class GetQuotaResponse(ServiceResponse):
+    account_id: Optional[str] = None
+    email_limit: Optional[int] = None
+    custom_email_limit: Optional[int] = None
+    alias_limit: Optional[int] = None

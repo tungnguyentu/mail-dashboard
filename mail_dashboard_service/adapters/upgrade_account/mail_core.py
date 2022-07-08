@@ -1,6 +1,8 @@
 import requests
 from mail_dashboard_service.core.models.upgrade_account import (
     CreateQuotaPayload,
+    GetQuotaPayload,
+    GetQuotaResponse,
     OrderPayload,
     OrderUpdatePayload,
     OrderUpdateResponse,
@@ -8,6 +10,8 @@ from mail_dashboard_service.core.models.upgrade_account import (
     OrderUpdateStatusPayload,
     CreateQuotaResponse,
     OrderResponse,
+    UpdateQuotaPayload,
+    UpdateQuotaResponse,
 
 )
 
@@ -88,3 +92,50 @@ class UpgradeAccountMailCoreAdapter:
             custom_email_limit=data.get("custom_email_limit"),
             alias_limit=data.get("alias_limit")
         )
+
+    def update_quota(self, payload: UpdateQuotaPayload) -> UpdateQuotaResponse:
+        response = requests.post(
+            self.settings.api.mail_core.update_quota,
+            data={
+                "account_id": payload.account_id,
+                "email_limit": payload.email_limit,
+                "custom_email_limit": payload.custom_email_limit,
+                "alias_limit": payload.alias_limit
+            }
+        )
+        if not response.ok:
+            return UpdateQuotaResponse(
+                message=response.reason,
+                status=0
+            )
+        data = response.json()
+        return UpdateQuotaResponse(
+            status=data.get("status"),
+            message=data.get("message"),
+            account_id=data.get("account_id"),
+            email_limit=data.get("email_limit"),
+            custom_email_limit=data.get("custom_email_limit"),
+            alias_limit=data.get("alias_limit")
+        ) 
+    
+    def get_quota(self, payload: GetQuotaPayload) -> GetQuotaResponse:
+        response = requests.get(
+            self.settings.api.mail_core.get_quota,
+            params={
+                "account_id": payload.account_id,
+            }
+        )
+        if not response.ok:
+            return GetQuotaResponse(
+                message=response.reason,
+                status=0
+            )
+        data = response.json()
+        return GetQuotaResponse(
+            status=data.get("status"),
+            message=data.get("message"),
+            account_id=data.get("account_id"),
+            email_limit=data.get("email_limit"),
+            custom_email_limit=data.get("custom_email_limit"),
+            alias_limit=data.get("alias_limit")
+        ) 

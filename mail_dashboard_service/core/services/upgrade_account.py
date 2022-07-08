@@ -4,7 +4,9 @@ from mail_dashboard_service.core.ports.outbound.upgrade_account import (
     UpgradeAccountPort
 )
 from mail_dashboard_service.core.models.upgrade_account import (
+    GetQuotaPayload,
     OrderUpdatePayload,
+    UpdateQuotaPayload,
     UpgradeAccountCommand,
     UpgradeAccountPayload,
     UpgradeAccountResponse,
@@ -51,14 +53,26 @@ class UpgradeAccountService:
         order_update_status_payload.status = "PAID"
         self.mail_core.update_order_status(order_update_status_payload)
         quota = self.mail_core.get_quota_mapping(command.plan_name)
-
-        quota_payload = CreateQuotaPayload(
-            account_id=command.account_id,
-            email_limit=quota.get("email_limit"),
-            custom_email_limit=quota.get("custom_email_limit"),
-            alias_limit=quota.get("alias_limit")
+        query_quota = GetQuotaPayload(
+            account_id=command.account_id
         )
-        quota_result = self.mail_core.create_quota(quota_payload)
+        quota_result = self.mail_core.get_quota(query_quota)
+        if quota_result:
+            update_quota_payload = UpdateQuotaPayload(
+                account_id=command.account_id,
+                email_limit=quota.get("email_limit"),
+                custom_email_limit=quota.get("custom_email_limit"),
+                alias_limit=quota.get("alias_limit")
+            )
+            quota_result = self.mail_core.update_quota(update_quota_payload)
+        else:
+            quota_payload = CreateQuotaPayload(
+                account_id=command.account_id,
+                email_limit=quota.get("email_limit"),
+                custom_email_limit=quota.get("custom_email_limit"),
+                alias_limit=quota.get("alias_limit")
+            )
+            quota_result = self.mail_core.create_quota(quota_payload)
         if not quota_result.ok:
             order_update_status_payload.status = "FAILED"
             self.mail_core.update_order_status(order_update_status_payload)
