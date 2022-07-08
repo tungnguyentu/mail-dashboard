@@ -171,7 +171,7 @@ class FreeEmailApdater:
 
     def deactivate(self, payload: DeactivateEmailPayload) -> DeactivateEmaiResponse:
         response = requests.post(
-            self.settings.api.mail_core.activate,
+            self.settings.api.mail_core.deactivate,
             data={
                 "account_id": payload.account_id,
                 "email": payload.email

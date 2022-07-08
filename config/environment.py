@@ -10,6 +10,9 @@ class MailCoreApiSettings:
     refill = env.str("REFILL", "")
     delete = env.str("DELETE", "")
     list_email = env.str("LIST_EMAIL", "")
+    get_email = env.str("GET_EMAIL", "")
+    active = env.str("ACTIVATE_EMAIL", "")
+    deactive = env.str("DEACTIVATE_EMAIL", "")
     create_quota = env.str("CREATE_QUOTA", "")
     get_quota = env.str("GET_QUOTA", "")
     update_quota = env.str("UPDATE_QUOTA", "")
@@ -18,11 +21,13 @@ class MailCoreApiSettings:
 class AccountApiSettings:
     check_user = env.str("CHECK_USER", "")
     upgrade_account = env.str("UPGRADE_ACCOUNT", "")
+    downgrade_account = env.str("DOWNGRADE_ACCOUNT", "")
 
 
 class BillingApiSettings:
     pay_order = env.str("PAY_ORDER", "")
     refund_order = env.str("REFUND_ORDER", "")
+    get_subs = env.str("GET_SUBS", "")
 
 
 class APISetting:
