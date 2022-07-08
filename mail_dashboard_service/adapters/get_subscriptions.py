@@ -2,7 +2,8 @@ import requests
 from mail_dashboard_service.core.models.get_subscriptions import (
     GetSubsPayload,
     GetSubsciptionsResponse,
-    GetSubsciptionResponse
+    GetSubsciptionResponse,
+    BillResponse
 )
 
 
@@ -28,10 +29,10 @@ class GetSubsciptionsAdapter:
         meta = data.get("_meta", {})
         subs = []
         for item in items:
-            bill = item.get("bill", [])
+            bills = item.get("bill", [])
             bill_responses = []
             for bill in bills:
-                bill_response.append(BillResponse(
+                bill_responses.append(BillResponse(
                     _id=bill.get("id"),
                     discount=bill.get("discount"),
                     bill_status=bill.get("status"),
